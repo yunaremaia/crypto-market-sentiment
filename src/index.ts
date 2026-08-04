@@ -204,4 +204,27 @@ app.get("/.well-known/x402.json", (c: any) =>
   }),
 );
 
+// LLM discovery (llms.txt standard)
+app.get("/llms.txt", (c: any) =>
+  c.text(`# Crypto Market Sentiment
+> crypto-market-sentiment.vercel.app
+
+Fear & Greed index, perp funding rates (Binance USDT), and global market metrics for AI agents. 60s caching.
+
+## Endpoints (x402, USDC on Base)
+
+- POST /entrypoints/sentiment/invoke — input: {} — $0.001/call — returns {fear_greed: {value, classification}, market: {total_market_cap_usd, btc_dominance}}
+- POST /entrypoints/funding/invoke — input: {"symbol":"BTC"} — $0.001/call — returns {funding: {fundingRate, markPrice}, interpretation}
+- POST /entrypoints/health/invoke — free
+
+## Payment (x402)
+
+1. POST → 402 with payment requirements (payTo, maxAmountRequired, asset)
+2. Pay USDC on Base, attach X-PAYMENT header
+3. Retry → JSON
+
+No API keys, no signup. Discovery: /.well-known/x402.json
+`),
+);
+
 export default app;
