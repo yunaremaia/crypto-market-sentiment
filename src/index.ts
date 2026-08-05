@@ -204,6 +204,32 @@ app.get("/.well-known/x402.json", (c: any) =>
   }),
 );
 
+// OpenAPI discovery
+app.get("/openapi.json", (c: any) => {
+  const spec = {
+    openapi: "3.0.3",
+    info: { title: "Crypto Market Sentiment", version: "1.0.0" },
+    servers: [{ url: "https://crypto-market-sentiment.vercel.app" }],
+    paths: {
+      "/entrypoints/sentiment/invoke": {
+        post: {
+          summary: "Fear & Greed index + global market metrics",
+          requestBody: { content: { "application/json": { schema: { type: "object" } } } },
+          responses: { "200": { description: "Sentiment data" }, "402": { description: "x402 payment required" } },
+        },
+      },
+      "/entrypoints/funding/invoke": {
+        post: {
+          summary: "Perp funding rates (Binance USDT)",
+          requestBody: { content: { "application/json": { schema: { type: "object" } } } },
+          responses: { "200": { description: "Funding rates" }, "402": { description: "x402 payment required" } },
+        },
+      },
+    },
+  };
+  return c.json(spec);
+});
+
 // LLM discovery (llms.txt standard)
 app.get("/llms.txt", (c: any) =>
   c.text(`# Crypto Market Sentiment
